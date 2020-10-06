@@ -30,12 +30,14 @@ window.onload = () => {
     const orderForm = document.getElementById('order')
     orderForm.onsubmit = (e) => {
         e.preventDefault()
+        const submit = document.getElementById('submit')
         const mealId = document.getElementById('meals-id')
         const mealIdValue = mealId.value
         if(!mealIdValue) {
             alert('Debe seleccionar un plato')
             return
         }
+        submit.setAttribute('disabled', true)
 
         const order = {
             meal_id: mealIdValue,
@@ -52,13 +54,11 @@ window.onload = () => {
               const renderedOrder = renderOrder(res,mealsState)
               const ordersList = document.getElementById('orders')
               ordersList.appendChild(renderedOrder)
+              submit.removeAttribute('disabled', true)
           })
 
     }
 
-    
-
-    
     fetch('https://serverless-vercel.krlspj.vercel.app/api/meals')
         .then(res => res.json())
         .then(data => {
