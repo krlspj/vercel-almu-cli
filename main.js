@@ -1,6 +1,8 @@
 'use strict'
-
+let user = {}
+let ruta = 'login' // login, register, orders
 let mealsState = []
+
 const stringToHTML = (s) => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(s, 'text/html')
@@ -26,7 +28,7 @@ const renderOrder = (order, meals) => {
     return element
 }
 
-window.onload = () => {
+const inicializaFormulario = () => {
     const orderForm = document.getElementById('order')
     orderForm.onsubmit = (e) => {
         e.preventDefault()
@@ -41,24 +43,31 @@ window.onload = () => {
 
         const order = {
             meal_id: mealIdValue,
-            user_id: 'chanchito feliz'
+            user_id: user._id
         }
+
+        const token = localStorage.getItem('token')
+        //fetch('http://localhost:3000/api/orders', {
         fetch('https://serverless-vercel.krlspj.vercel.app/api/orders', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                authorization: token
             },
             body: JSON.stringify(order)
         }).then(x => x.json())
           .then(res => {
+              //console.log('res', res)
               const renderedOrder = renderOrder(res,mealsState)
               const ordersList = document.getElementById('orders')
               ordersList.appendChild(renderedOrder)
               submit.removeAttribute('disabled', true)
           })
-
     }
+}
 
+const inicializaDatos = () => {
+    //fetch('http://localhost:3000/api/meals')
     fetch('https://serverless-vercel.krlspj.vercel.app/api/meals')
         .then(res => res.json())
         .then(data => {
@@ -69,6 +78,8 @@ window.onload = () => {
             const listItems = data.map(renderItem)
             listItems.forEach(elem => mealsList.appendChild(elem))
             submit.removeAttribute('disabled')
+            
+            //fetch('http://localhost:3000/api/orders')
             fetch('https://serverless-vercel.krlspj.vercel.app/api/orders')
                 .then(res => res.json())
                 .then(ordersData => {
@@ -76,7 +87,69 @@ window.onload = () => {
                     const listOrders = ordersData.map(order => renderOrder(order, data))
                     ordersList.innerHTML = ''
                     listOrders.forEach(order => ordersList.appendChild(order))
-                    console.log('orders -> ', ordersData)
+                    //console.log('orders -> ', ordersData)
                 })
     })
+}
+
+const renderApp = () => {
+    const token = localStorage.getItem('token')
+    if (token) {
+        user = JSON.parse(localStorage.getItem('user'))
+        return renderOrders()
+    }
+    renderLogin()
+    //console.log('token', token)
+}
+
+const renderOrders = () => {
+    const ordersView = document.getElementById('orders-view')
+    //console.log('ordersView', ordersView)
+    document.getElementById('app').innerHTML = ordersView.innerHTML
+    inicializaFormulario()
+    inicializaDatos()
+}
+
+const renderLogin = () => {
+    const loginView = document.getElementById('login-view')
+    document.getElementById('app').innerHTML = loginView.innerHTML
+    const loginForm = document.getElementById('login-form')
+    
+    loginForm.onsubmit = (e) => {
+        e.preventDefault()
+        const email = document.getElementById('email').value
+        const password = document.getElementById('password').value
+    //fetch('http://localhost:3000/api/auth/login', {
+        fetch('https://serverless-vercel.krlspj.vercel.app/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({email, password}) // =>body: JSON.stringify({email: email, password: password})
+        }).then(x => x.json())
+        .then(resp => {
+            localStorage.setItem('token', resp.token)
+            ruta = 'orders'
+            return resp.token
+        }).then(token => {
+            //return fetch('http://localhost:3000/api/auth/me', {
+            return fetch('https://serverless-vercel.krlspj.vercel.app/api/auth/me', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    authorization: token
+                }
+            })
+        }).then(x => x.json())
+            .then(fetchedUser => {
+                localStorage.setItem('user', JSON.stringify(fetchedUser))
+                user = fetchedUser
+            })
+        .then(() => renderOrders())
+    }
+}
+
+window.onload = () => {
+    renderApp()
+    
 }
