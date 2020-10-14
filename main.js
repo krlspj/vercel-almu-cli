@@ -24,7 +24,8 @@ const renderItem = (item) => {
 const renderOrder = (order, meals) => {
     const meal = meals.find(meal => meal._id === order.meal_id)
     const element = stringToHTML(`<li data-id="${order._id}">${meal.name}\
-     - ${order.user_id}</li>`)
+     - ${order.user_id}\
+     - ${order.user_name}</li>`)
     return element
 }
 
@@ -43,7 +44,8 @@ const inicializaFormulario = () => {
 
         const order = {
             meal_id: mealIdValue,
-            user_id: user._id
+            user_id: user._id,
+            user_name: user.email
         }
 
         const token = localStorage.getItem('token')
