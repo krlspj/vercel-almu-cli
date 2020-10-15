@@ -25,7 +25,8 @@ const renderOrder = (order, meals) => {
     const meal = meals.find(meal => meal._id === order.meal_id)
     const element = stringToHTML(`<li data-id="${order._id}">${meal.name}\
      - ${order.user_id}\
-     - ${order.user_name}</li>`)
+     - ${order.user_name}\
+     - ${order.oTime}</li>`)
     return element
 }
 
@@ -45,12 +46,14 @@ const inicializaFormulario = () => {
         const order = {
             meal_id: mealIdValue,
             user_id: user._id,
-            user_name: user.email
+            user_name: user.email,
+            //time: oTime
+
         }
 
         const token = localStorage.getItem('token')
-        //fetch('http://localhost:3000/api/orders', {
-        fetch('https://serverless-vercel.krlspj.vercel.app/api/orders', {
+        fetch('http://localhost:3000/api/orders', {
+        //fetch('https://serverless-vercel.krlspj.vercel.app/api/orders', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -69,8 +72,8 @@ const inicializaFormulario = () => {
 }
 
 const inicializaDatos = () => {
-    //fetch('http://localhost:3000/api/meals')
-    fetch('https://serverless-vercel.krlspj.vercel.app/api/meals')
+    fetch('http://localhost:3000/api/meals')
+    //fetch('https://serverless-vercel.krlspj.vercel.app/api/meals')
         .then(res => res.json())
         .then(data => {
             mealsState = data
@@ -81,8 +84,8 @@ const inicializaDatos = () => {
             listItems.forEach(elem => mealsList.appendChild(elem))
             submit.removeAttribute('disabled')
             
-            //fetch('http://localhost:3000/api/orders')
-            fetch('https://serverless-vercel.krlspj.vercel.app/api/orders')
+            fetch('http://localhost:3000/api/orders')
+            //fetch('https://serverless-vercel.krlspj.vercel.app/api/orders')
                 .then(res => res.json())
                 .then(ordersData => {
                     const ordersList = document.getElementById('orders')
