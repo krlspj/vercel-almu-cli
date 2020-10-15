@@ -52,8 +52,8 @@ const inicializaFormulario = () => {
         }
 
         const token = localStorage.getItem('token')
-        fetch('http://localhost:3000/api/orders', {
-        //fetch('https://serverless-vercel.krlspj.vercel.app/api/orders', {
+        //fetch('http://localhost:3000/api/orders', {
+        fetch('https://serverless-vercel.krlspj.vercel.app/api/orders', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -72,8 +72,8 @@ const inicializaFormulario = () => {
 }
 
 const inicializaDatos = () => {
-    fetch('http://localhost:3000/api/meals')
-    //fetch('https://serverless-vercel.krlspj.vercel.app/api/meals')
+    //fetch('http://localhost:3000/api/meals')
+    fetch('https://serverless-vercel.krlspj.vercel.app/api/meals')
         .then(res => res.json())
         .then(data => {
             mealsState = data
@@ -84,8 +84,8 @@ const inicializaDatos = () => {
             listItems.forEach(elem => mealsList.appendChild(elem))
             submit.removeAttribute('disabled')
             
-            fetch('http://localhost:3000/api/orders')
-            //fetch('https://serverless-vercel.krlspj.vercel.app/api/orders')
+            //fetch('http://localhost:3000/api/orders')
+            fetch('https://serverless-vercel.krlspj.vercel.app/api/orders')
                 .then(res => res.json())
                 .then(ordersData => {
                     const ordersList = document.getElementById('orders')
@@ -124,7 +124,7 @@ const renderLogin = () => {
         e.preventDefault()
         const email = document.getElementById('email').value
         const password = document.getElementById('password').value
-    //fetch('http://localhost:3000/api/auth/login', {
+        //fetch('http://localhost:3000/api/auth/login', {
         fetch('https://serverless-vercel.krlspj.vercel.app/api/auth/login', {
             method: 'POST',
             headers: {
