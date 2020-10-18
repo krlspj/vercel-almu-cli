@@ -26,7 +26,34 @@ const renderOrder = (order, meals) => {
     const element = stringToHTML(`<li data-id="${order._id}">${meal.name}\
      - ${order.user_id}\
      - ${order.user_name}\
-     - ${order.oTime}</li>`)
+     - ${order.oTime}\
+     </li>`)
+    //const buttonElement = document.createElement('button')
+    //buttonElement.textContent = 'Del'
+    const buttonElement = stringToHTML(`<button>delete</button>`)
+    buttonElement.addEventListener('click', () => {
+        const token = localStorage.getItem('token')
+        //alert('hello ' + order.user_name)
+        fetch('https://serverless-vercel.krlspj.vercel.app/api/orders' + '/' + order._id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                authorization: token
+            }
+            //body: JSON.stringify(order)
+        }).then(res => {
+              //console.log('res', res)
+              inicializaDatos()
+              /*
+              const renderedOrder = renderOrder(res,mealsState)
+              const ordersList = document.getElementById('orders')
+              ordersList.appendChild(renderedOrder)
+              submit.removeAttribute('disabled', true)
+              */
+          })
+        
+    })
+    element.appendChild(buttonElement)
     return element
 }
 
