@@ -30,6 +30,11 @@ const renderOrder = (order, meals) => {
     return element
 }
 
+const getTime = () => {
+    const d = new Date()
+    return `${d.toLocaleDateString()} - ${d.toLocaleTimeString()}`
+}
+
 const inicializaFormulario = () => {
     const orderForm = document.getElementById('order')
     orderForm.onsubmit = (e) => {
@@ -47,8 +52,7 @@ const inicializaFormulario = () => {
             meal_id: mealIdValue,
             user_id: user._id,
             user_name: user.email,
-            //time: oTime
-
+            oTime: getTime()
         }
 
         const token = localStorage.getItem('token')
